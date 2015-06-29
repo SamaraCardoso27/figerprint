@@ -5,28 +5,6 @@ import Image
 import cv2
 import datetime
 import numpy as np
-from skimage import morphology
-import cPickle
-
-def thining(wImage):
-    im = cv2.imread(wImage)
-    im = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
-    im = cv2.threshold(im, 0, 255, cv2.THRESH_OTSU)[1]
-    #im = morphology.skeletonize(im)
-    cv2.imwrite("dst.png", im)
-    print('thining')
-
-
-
-
-def skeletonization(img):
-    img = cv2.imread('messigray.png',0)
-    
-
-
-
-
-
 
 """ Create Image size  structure to pass through function"""
 class FTRSCAN_IMAGE_SIZE(Structure):
@@ -95,49 +73,13 @@ while True:
 		outputIm.putdata(vect)
 		base_name = str(datetime.datetime.now()).replace(':','_').replace('/','_')+'.jpeg'
 		outputIm.save(base_name)
-	
 		img = cv2.imread(base_name)
-                size = np.size(img)
-                skel = np.zeros(img.shape,np.uint8)
-                     
-                ret,img = cv2.threshold(img,127,255,0)
-                element = cv2.getStructuringElement(cv2.MORPH_CROSS,(3,3))
-                done = False
-                     
-                while( not done):
-                    eroded = cv2.erode(img,element)
-                    temp = cv2.dilate(eroded,element)
-                    temp = cv2.subtract(img,temp)
-                    skel = cv2.bitwise_or(skel,temp)
-                    img = eroded.copy()
-                     
-                    #zeros = size - cv2.countNonZero(img)
-                    #if zeros==size:
-                    done = True
-                     
-                cv2.imwrite('Skeletonization.jpg',skel)
-
-
-
-
-
-
-
-
-
-
-		
 		gray= cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-		
-		sift = cv2.SIFT(400)
+		sift = cv2.SIFT(100)
 		kp = sift.detect(gray,None)
-		index = []
-		for point in kp:
-                    temp = (point.pt, point.size, point.angle, point.response, point.octave, point.class_id)
-                index.append(temp)
-		print index
+		print kp
 		img=cv2.drawKeypoints(gray,kp)
-		cv2.imwrite('Processed_'+base_name,img)
+		cv2.imwrite('Processed_'+base_name,gray)
 		break
 	else:
 		PrintErrorMessage(lib.ftrScanGetLastError())
@@ -145,5 +87,3 @@ while True:
 
 print 'System Terminate'
 lib.ftrScanCloseDevice(hDevice)
-
-

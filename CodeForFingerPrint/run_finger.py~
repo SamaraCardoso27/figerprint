@@ -31,7 +31,7 @@ def PrintErrorMessage(nErrCode):
 	else:
 		print "Unknown return code - ", nErrCode
 
-lib = cdll.LoadLibrary('/Documentos/TG/fingerprint/CodeForFingerPrint/libScanAPI.so')
+lib = cdll.LoadLibrary('/home/samara/Documentos/TG/fingerprint/CodeForFingerPrint/libScanAPI.so')
 
 if lib == None:
 	print 'Cannot open the library....'
@@ -75,11 +75,11 @@ while True:
 		outputIm.save(base_name)
 		img = cv2.imread(base_name)
 		gray= cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-		sift = cv2.SIFT(100)
-		kp = sift.detect(gray,None)
-		print kp
-		img=cv2.drawKeypoints(gray,kp)
-		cv2.imwrite('Processed_'+base_name,img)
+		#sift = cv2.SIFT(100)
+		#kp = sift.detect(gray,None)
+		#print kp
+		#img=cv2.drawKeypoints(gray,kp)
+		cv2.imwrite('Processed_'+base_name,gray)
 		break
 	else:
 		PrintErrorMessage(lib.ftrScanGetLastError())
