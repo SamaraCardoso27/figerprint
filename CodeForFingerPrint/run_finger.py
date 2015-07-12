@@ -5,6 +5,10 @@ import Image
 import cv2
 import datetime
 import numpy as np
+from Preprocessing import *
+import Preprocessing
+
+
 
 """ Create Image size  structure to pass through function"""
 class FTRSCAN_IMAGE_SIZE(Structure):
@@ -72,14 +76,11 @@ while True:
 		outputIm = Image.new("RGB", (ImageSize.nWidth, ImageSize.nHeight))
 		outputIm.putdata(vect)
 		base_name = str(datetime.datetime.now()).replace(':','_').replace('/','_')+'.jpeg'
-		outputIm.save(base_name)
-		img = cv2.imread(base_name)
-		gray= cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-		sift = cv2.SIFT(100)
-		kp = sift.detect(gray,None)
-		print kp
-		img=cv2.drawKeypoints(gray,kp)
-		cv2.imwrite('Processed_'+base_name,gray)
+		img = outputIm.save(base_name)
+		improveImage = Preprocessing.improveImage(base_name)
+		skeletonization = Preprocessing.skeletonization(improveImage)
+		createKeyPoints = Preprocessing.createKeyPoints(skeletonization)
+		Preprocessing.saveKeyPoints(createKeyPoints)
 		break
 	else:
 		PrintErrorMessage(lib.ftrScanGetLastError())
