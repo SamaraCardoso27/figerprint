@@ -4,6 +4,8 @@ from skimage import morphology
 import cPickle
 from matplotlib import pyplot as plt
 import hashlib
+import string
+import random
 
 def improveImage(wImage):
     img = cv2.imread(wImage)
@@ -39,12 +41,15 @@ def skeletonization(wGray):
     
 
 def createKeyPoints(wImage):
-    sift = cv2.SIFT(20)
+    sift = cv2.SIFT(100)
     kp = sift.detect(wImage,None)
     keyPoints=cv2.drawKeypoints(wImage,kp)
     cv2.imwrite('createKeyPoints-1.jpg',keyPoints)
     print('Saved Image-createKeyPoints-1')
     return keyPoints
+
+
+
     
 def saveKeyPoints(keyPoints):
     d=cv2.FeatureDetector_create("SIFT")
@@ -60,4 +65,7 @@ def saveKeyPoints(keyPoints):
     print('Save KeyPoints')
     f.close()
   
+  
+def create_name(size=6, chars=string.ascii_uppercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
 

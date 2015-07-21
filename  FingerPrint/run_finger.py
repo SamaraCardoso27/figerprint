@@ -5,9 +5,6 @@ import Image
 import cv2
 import datetime
 import numpy as np
-from Preprocessing import *
-import Preprocessing
-
 
 """ Create Image size  structure to pass through function"""
 class FTRSCAN_IMAGE_SIZE(Structure):
@@ -34,7 +31,7 @@ def PrintErrorMessage(nErrCode):
 	else:
 		print "Unknown return code - ", nErrCode
 
-lib = cdll.LoadLibrary('/home/samara/Documentos/TG/fingerprint/CodeForFingerPrint/libScanAPI.so')
+lib = cdll.LoadLibrary('/home/diego/Documents/Fingerprint/libScanAPI_Linux_Src_v12.0.1.1576/linux_x86_64bit/libScanAPI.so')
 
 if lib == None:
 	print 'Cannot open the library....'
@@ -75,12 +72,14 @@ while True:
 		outputIm = Image.new("RGB", (ImageSize.nWidth, ImageSize.nHeight))
 		outputIm.putdata(vect)
 		base_name = str(datetime.datetime.now()).replace(':','_').replace('/','_')+'.jpeg'
-		img = outputIm.save(base_name)
-		improveImage = Preprocessing.improveImage(base_name)
-		skeletonization = Preprocessing.skeletonization(improveImage)
-		createKeyPoints = Preprocessing.createKeyPoints(skeletonization)
-		Preprocessing.saveKeyPoints(createKeyPoints)
-		#db.insert('samara',createKeyPoints,str(datetime.datetime.now()))
+		outputIm.save(base_name)
+		img = cv2.imread(base_name)
+		gray= cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+		sift = cv2.SIFT(100)
+		kp = sift.detect(gray,None)
+		print kp
+		img=cv2.drawKeypoints(gray,kp)
+		cv2.imwrite('Processed_'+base_name,img)
 		break
 	else:
 		PrintErrorMessage(lib.ftrScanGetLastError())
